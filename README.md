@@ -2,6 +2,8 @@
 
 An engaging web application designed to help children (18 months to 8 years) learn foreign languages through an AI-powered, immersive platform.
 
+🌐 **Live Demo:** [https://kidslang-demo-60qzkn443-skachan-harvardedus-projects.vercel.app](https://kidslang-demo-60qzkn443-skachan-harvardedus-projects.vercel.app)
+
 ## Features
 
 - Interactive video lessons
