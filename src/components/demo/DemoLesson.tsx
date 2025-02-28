@@ -1,80 +1,135 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Tab } from '@headlessui/react'
 import VideoLesson from './VideoLesson'
 import VocabularyGame from './VocabularyGame'
 import BedtimeStory from './BedtimeStory'
 
-const languages = ['English', 'Spanish', 'French', 'Mandarin']
+const languages = [
+  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'es', name: 'Spanish', flag: '🇪🇸' },
+  { code: 'fr', name: 'French', flag: '🇫🇷' },
+  { code: 'zh', name: 'Mandarin', flag: '🇨🇳' },
+]
+
+const activities = [
+  { id: 'video', name: 'Video Lesson', icon: '📺' },
+  { id: 'vocabulary', name: 'Vocabulary Game', icon: '🎮' },
+  { id: 'story', name: 'Bedtime Story', icon: '📚' },
+]
 
 export default function DemoLesson() {
-  const [selectedLanguage, setSelectedLanguage] = useState('Mandarin')
+  const [selectedLanguage, setSelectedLanguage] = useState(languages[0].name)
+  const [selectedTab, setSelectedTab] = useState(0)
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-2xl shadow-sm p-6 mb-8"
-      >
-        <h1 className="heading-2 text-center mb-8">
-          Interactive Demo Lesson
-        </h1>
-
-        <div className="mb-8">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Select Language:
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {languages.map((lang) => (
-              <button
-                key={lang}
-                onClick={() => setSelectedLanguage(lang)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  selectedLanguage === lang
-                    ? 'bg-primary-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {lang}
-              </button>
-            ))}
-          </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-3xl shadow-lg overflow-hidden"
+    >
+      {/* Language Selection */}
+      <div className="bg-gradient-to-r from-primary-500 to-secondary-500 p-6 text-white">
+        <h2 className="text-xl font-semibold mb-4">Choose Your Language</h2>
+        <div className="flex flex-wrap gap-3">
+          {languages.map((lang) => (
+            <motion.button
+              key={lang.name}
+              onClick={() => setSelectedLanguage(lang.name)}
+              className={`
+                inline-flex items-center px-4 py-2 rounded-full text-sm font-medium
+                transition-all duration-200 transform hover:scale-105
+                ${
+                  selectedLanguage === lang.name
+                    ? 'bg-white text-primary-600 shadow-lg'
+                    : 'bg-white/20 hover:bg-white/30'
+                }
+              `}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <span className="mr-2 text-lg">{lang.flag}</span>
+              {lang.name}
+            </motion.button>
+          ))}
         </div>
+      </div>
 
-        <Tab.Group>
-          <Tab.List className="flex space-x-1 rounded-xl bg-primary-100 p-1 mb-8">
-            {['Video Lesson', 'Vocabulary Game', 'Bedtime Story'].map((category) => (
+      {/* Content Area */}
+      <div className="p-6">
+        <Tab.Group selectedIndex={selectedTab} onChange={setSelectedTab}>
+          <Tab.List className="flex space-x-2 rounded-xl bg-gray-100 p-2 mb-8">
+            {activities.map((activity) => (
               <Tab
-                key={category}
+                key={activity.id}
                 className={({ selected }) =>
-                  `w-full rounded-lg py-2.5 text-sm font-medium leading-5
-                  ${
-                    selected
-                      ? 'bg-white text-primary-700 shadow'
-                      : 'text-primary-600 hover:bg-white/[0.12] hover:text-primary-800'
-                  }`
+                  `
+                    flex-1 inline-flex items-center justify-center px-4 py-3 
+                    rounded-lg text-sm font-medium transition-all duration-200
+                    ${
+                      selected
+                        ? 'bg-white text-primary-600 shadow-md'
+                        : 'text-gray-600 hover:text-primary-600 hover:bg-white/50'
+                    }
+                  `
                 }
               >
-                {category}
+                <span className="mr-2 text-lg">{activity.icon}</span>
+                {activity.name}
               </Tab>
             ))}
           </Tab.List>
-          <Tab.Panels>
-            <Tab.Panel>
-              <VideoLesson language={selectedLanguage} />
-            </Tab.Panel>
-            <Tab.Panel>
-              <VocabularyGame language={selectedLanguage} />
-            </Tab.Panel>
-            <Tab.Panel>
-              <BedtimeStory language={selectedLanguage} />
-            </Tab.Panel>
-          </Tab.Panels>
+
+          <AnimatePresence mode="wait">
+            <Tab.Panels>
+              <Tab.Panel>
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                >
+                  <VideoLesson language={selectedLanguage} />
+                </motion.div>
+              </Tab.Panel>
+              <Tab.Panel>
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                >
+                  <VocabularyGame language={selectedLanguage} />
+                </motion.div>
+              </Tab.Panel>
+              <Tab.Panel>
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                >
+                  <BedtimeStory language={selectedLanguage} />
+                </motion.div>
+              </Tab.Panel>
+            </Tab.Panels>
+          </AnimatePresence>
         </Tab.Group>
-      </motion.div>
-    </div>
+      </div>
+
+      {/* Progress Indicator */}
+      <div className="px-6 pb-6">
+        <div className="bg-gray-100 rounded-full h-2 overflow-hidden">
+          <motion.div
+            className="h-full bg-gradient-to-r from-primary-500 to-secondary-500"
+            initial={{ width: '0%' }}
+            animate={{ width: `${((selectedTab + 1) / activities.length) * 100}%` }}
+            transition={{ duration: 0.3 }}
+          />
+        </div>
+        <p className="text-center text-sm text-gray-500 mt-2">
+          Activity {selectedTab + 1} of {activities.length}
+        </p>
+      </div>
+    </motion.div>
   )
 }
