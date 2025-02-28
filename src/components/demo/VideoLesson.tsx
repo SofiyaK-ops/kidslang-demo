@@ -10,29 +10,35 @@ interface VideoLessonProps {
 const lessons = {
   English: {
     title: "Basic Greetings in English",
-    video: "https://www.youtube.com/embed/6qNDAhY8pdE", // English greetings video
+    videoId: "6qNDAhY8pdE",
     description: "Learn basic English greetings and introductions"
   },
   Spanish: {
     title: "Saludos Básicos en Español",
-    video: "https://www.youtube.com/embed/xrR2EZYcFXM", // Spanish greetings video
+    videoId: "xrR2EZYcFXM",
     description: "Aprende saludos básicos en español"
   },
   French: {
     title: "Salutations de Base en Français",
-    video: "https://www.youtube.com/embed/hd0_GZHHWeE", // French greetings video
+    videoId: "hd0_GZHHWeE",
     description: "Apprenez les salutations de base en français"
   },
   Mandarin: {
     title: "基础中文问候语",
-    video: "https://www.youtube.com/embed/nQqY3j8btbI", // Mandarin greetings video
+    videoId: "nQqY3j8btbI",
     description: "学习基础中文问候语"
   }
 }
 
 export default function VideoLesson({ language }: VideoLessonProps) {
   const [progress, setProgress] = useState(0)
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false)
   const lesson = lessons[language as keyof typeof lessons]
+
+  // Function to create a lite YouTube embed URL
+  const getLiteYouTubeUrl = (videoId: string) => {
+    return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1`
+  }
 
   return (
     <div className="space-y-6">
@@ -47,13 +53,25 @@ export default function VideoLesson({ language }: VideoLessonProps) {
       </div>
 
       {/* Video Player */}
-      <div className="aspect-video bg-gray-900 rounded-xl overflow-hidden shadow-lg">
+      <div className="aspect-video bg-gray-900 rounded-xl overflow-hidden shadow-lg relative">
+        {!isVideoLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-r from-primary-500 to-secondary-500">
+            <div className="text-white text-center">
+              <svg className="animate-spin h-8 w-8 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <p className="text-lg font-medium">Loading lesson...</p>
+            </div>
+          </div>
+        )}
         <iframe
           className="w-full h-full"
-          src={lesson.video}
+          src={getLiteYouTubeUrl(lesson.videoId)}
           title={lesson.title}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
+          onLoad={() => setIsVideoLoaded(true)}
         />
       </div>
 
